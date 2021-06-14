@@ -9,14 +9,11 @@ import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.http.HttpStatus
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class ElvlApplicationTests() {
-
-    @Autowired
-    lateinit var restTemplate: TestRestTemplate
+class ElvlApplicationTests(@Autowired val restTemplate: TestRestTemplate) {
 
     @Test
     fun testHello() {
-        restTemplate.getForEntity<String>("http://localhost:8080/api/v1.0/hello").apply {
+        restTemplate.getForEntity<String>("http://localhost:8080$API_ROOT/hello").apply {
             assertThat(statusCode).isEqualTo(HttpStatus.OK)
             assertThat(body).isEqualTo("HELLO")
         }

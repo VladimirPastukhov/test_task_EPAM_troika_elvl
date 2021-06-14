@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.RestController
 
 
 @RestController
-@RequestMapping("/api/v1.0/")
+@RequestMapping(API_ROOT)
 class HelloController {
-    @GetMapping("/hello") fun hello() = "HELLO"
+    @GetMapping("/hello")
+    fun hello() = "HELLO"
 }
