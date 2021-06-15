@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 @Entity
-class Quote(
+data class Quote(
     @Column(length = 12)
     val isin: String,
     val bid: BigDecimal? = null,

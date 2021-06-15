@@ -1,5 +1,8 @@
 package vvp.epam.elvl.quote
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.springframework.stereotype.Service
 import vvp.epam.elvl.elvl.ELvlService
 
@@ -15,9 +18,15 @@ class QuoteService(
         if (validation != QuoteStatus.OK)
             return QuoteProcessResponse(validation, quote)
 
-        val savedQuote = repository.save(quote)
-        eLvlService.update(quote)
-        return QuoteProcessResponse(validation, savedQuote)
+        var savedQuote: Quote? = null
+        runBlocking {
+            launch { eLvlService.update(quote) }
+            savedQuote = async { repository.save(quote) }.await()
+        }
+        return QuoteProcessResponse(validation, savedQuote!!)
+//        eLvlService.update(quote)
+//        val savedQuote = repository.save(quote)
+//        return QuoteProcessResponse(validation, savedQuote)
     }
 }
 
