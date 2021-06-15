@@ -10,19 +10,17 @@ class ELvlService(
 ) {
     val eLvlMap = mutableMapOf<String, BigDecimal>()
 
-    fun update(quote: Quote) {
-        val oldElvl = getElvl(quote.isin)
+    @Synchronized//test shows that such rough synch (not by certain isin) doesn`t affect response time much)
+    fun  update(quote: Quote) {
+        val oldElvl = eLvlMap[quote.isin]
         val newElvl = calcElvl(quote.bid, quote.ask, oldElvl)
-        if (newElvl != null && newElvl != oldElvl)
-            save(quote.isin, newElvl)
+        if (newElvl != null && newElvl != oldElvl){
+            repository.save(Elvl(quote.isin, newElvl))
+            eLvlMap[quote.isin] = newElvl
+        }
     }
 
     fun getElvl(isin: String): BigDecimal? = eLvlMap[isin]
-
-    fun save(isin: String, eLvl: BigDecimal) {
-        eLvlMap[isin] = eLvl
-        repository.save(Elvl(isin, eLvl))
-    }
 
     fun getAllElvl() = eLvlMap.map { (isin, elvl) -> Elvl(isin, elvl) }
 }
